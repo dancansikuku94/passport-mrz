@@ -1,10 +1,10 @@
 #Python 3 and above
 
 """
-    Passport MRZ Reader
+    Passport MRZ Scanner
 
 """
-
+#Importing libraries
 import os
 import json
 import logging
@@ -29,22 +29,19 @@ app = Flask(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-@app.route('/')
-def hello_world():
-    return 'Welcome ! The endpoint is at <b>/api/v1/OCR</b>'
 
-@app.route('/api/v1/OCR', methods=['POST'])
+@app.route('/api/v1/OCR', methods=['POST']) #URL to endpoint
 def process():
 
     imagefile = request.files.get('imagefile', None)
     if not imagefile:
-        return make_response("Missing file parameter", 400)
+        return make_response("Missing image file parameter", 400)
 
     filename = secure_filename(imagefile.filename)
     full_path = os.path.join(UPLOAD_FOLDER, filename)
     imagefile.save(full_path)
 
-    # Extract informations with PassportEye
+    # Extracting informations with PassportEye
     p = MRZPipeline(full_path, extra_cmdline_params='--oem 0')
     mrz = p.result
 
@@ -55,7 +52,7 @@ def process():
 
     # Converting image to text
     full_content = image_to_string(full_path)
-    # logging.info('full image content = %s' %(full_content))
+    
 
     all_infos = {}
     all_infos['last_name'] = mrz_data['surname'].upper()
@@ -65,7 +62,6 @@ def process():
     all_infos['nationality'] = get_country_name(mrz_data['nationality'])
     all_infos['number'] = mrz_data['number']
     all_infos['sex'] = mrz_data['sex']
-    # all_infos['full_text'] = full_content
     valid_score = mrz_data['valid_score']
 
     # Trying to extract full name
@@ -101,15 +97,15 @@ def clean_name(name):
     return name.strip()
 
 def image_to_string(img_path):
-    """Convert image to text using tesseract OCR"""
+    """Converting image to text using tesseract OCR"""
 
     img = cv2.imread(img_path)
 
-    # Extract the file name without the file extension
+    # Extracting the file name without the file extension
     file_name = os.path.basename(img_path).split('.')[0]
     file_name = file_name.split()[0]
 
-    # Create a directory for outputs
+    # Creating a directory for outputs
     output_path = os.path.join(EDIT_FOLDER, file_name)
     if not os.path.exists(output_path):
         os.makedirs(output_path)
@@ -124,7 +120,7 @@ def image_to_string(img_path):
     img = cv2.erode(img, kernel, iterations=1)
     # Apply blur to smooth out the edges
     img = cv2.GaussianBlur(img, (5, 5), 0)
-    # Apply threshold to get image with only b&w (binarization)
+    # Apply threshold to get image with only black & white (binarization)
     img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     # Save the filtered image in the output directory
     save_path = os.path.join(output_path, file_name + "_filter.jpg")

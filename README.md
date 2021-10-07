@@ -1,12 +1,12 @@
-# Simple passport reader
+#  Passport MZR scanner
 
-A very simple python backend API with flask to extract text informations from a passport image file.
+ Python backend API with flask to extract text informations from a passport image file.
 
 ## ROLE
-THIS APP ONLY SERVES TO DEMONSTRATE THE BASIC USE OF [PassportEye](https://pypi.org/project/PassportEye/) TO SCAN THE MACHINE READABLE ZONES (MRZ) THEN IMPROVE THE RESULT WITH [Tesseract OCR](https://github.com/tesseract-ocr/tesseract).
+THIS APP ONLY SERVES TO DEMONSTRATE  USE OF [PassportEye] library (https://pypi.org/project/PassportEye/) TO SCAN THE MACHINE READABLE ZONES (MRZ) THEN IMPROVE THE RESULT WITH [Tesseract OCR] library (https://github.com/tesseract-ocr/tesseract).
 
 ## Prerequisite
-First of all, make sure you have [Docker](https://docs.docker.com/engine/installation/) Engine installed in your system.
+To use the API, ensure you have installed  [Docker](https://docs.docker.com/engine/installation/) Engine in your system.
 
 ## Quickstart
  Build the app with docker compose.
@@ -14,10 +14,10 @@ First of all, make sure you have [Docker](https://docs.docker.com/engine/install
 docker-compose up --build
 ```
 ## Endpoint `http://0.0.0.0:5000/api/v1/OCR`
-This is the only one endpoint of this app and accept one `POST` parameter :
-- `imagefile` : An image file of the passport. For mobile app, we can use the camera.
+This is the API  endpoint and accept one `POST` parameter :
+- `imagefile` : An image file of the passport. For mobile app, we use the camera.
 
-##### A sample response:
+##### A sample  Json response of the API:
 ```json
 {
     "country": "Kenya",
